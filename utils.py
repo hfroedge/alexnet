@@ -46,7 +46,11 @@ def convert_features(trx:pd.DataFrame, clients:pd.DataFrame):
 	df = pd.DataFrame(data={k:v for k,v in zip(names, series)})
 	df = df.fillna(0)
 
-	feature_set = pd.merge(clients, df, on='account_number')
+	df = pd.merge(clients, df, on='account_number')
+	df = df.set_index("account_number")
+	df = df.drop(["name", "address"], axis=1)
+
+	feature_set = df
 
 	return feature_set
 
