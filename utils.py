@@ -80,33 +80,46 @@ def get_net_incomes(trx:pd.DataFrame, clients:pd.DataFrame)->pd.Series:
 
 	return net_incomes
 
-def __get_recommendation(client:pd.DataFrame, client_data=None)->str:
+def __get_recommendation(client:pd.DataFrame, features:pd.DataFrame, acct_num:int)->str:
     """
     Given client row, gives recommendation 
     
     :param client: row from clients csv
-    :param client_data: consolidated data for account number from trx csv
+    :param features: consolidated data of all clients
     
     :return recommendation
     """
     if client["has_mortgage"].values[0] == 1:
         recommendation =  "refinance_mortgage"
-    else:
+    elif features.loc[acct_num]["crypto"] > 0.19:
         recommendation = "get_investments"
+    else:
+    	recommendation = ""
         
     return recommendation
 
-def write_solution(clients:pd.DataFrame, name:str="tests")->None:
+def write_solution(clients:pd.DataFrame, features:pd.DataFrame, name:str="tests")->None:
     
-    save_path = "../solution_{}.txt".format(name)
+	save_path = "../solution_{}.txt".format(name)
+
+	num_clients = 0
+	recommendations = []
+	accounts = []
+	for acct in clients["account_number"]:
+	    
+		recommendation = __get_recommendation(clients.loc[clients["account_number"]==acct], features, acct)
+        
+		if recommendation != "":
+			recommendations.append(recommendation)
+			accounts.append(acct)
+
     
-    with open(save_path,"w") as f:
-        f.write(str(clients.shape[0]))
-        f.write("\n")
-        for acct in clients["account_number"]:
-            f.write(str(acct))
-            f.write(" ")
-            recommendation = __get_recommendation(clients.loc[clients["account_number"]==acct])
-            f.write(recommendation)
-            f.write("\n")
+	with open(save_path,"w") as f:
+	    f.write(str(len(recommendations)))
+	    f.write("\n")
+	    for acct, rec in zip(accounts, recommendations):
+	        f.write(str(acct))
+	        f.write(" ")
+	        f.write(rec)
+	        f.write("\n")
 
