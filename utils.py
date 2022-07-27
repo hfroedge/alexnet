@@ -11,7 +11,7 @@ def read_products(folder:str="B")->pd.DataFrame:
 
 	return pd.DataFrame(data={"products":products, "rewards":rewards})
 
-def convert_features(trx:pd.DataFrame, clients:pd.DataFrame):
+def convert_features(trx:pd.DataFrame, clients:pd.DataFrame)->pd.DataFrame:
 
 	categ = set(trx.value_counts('description').index)
 
