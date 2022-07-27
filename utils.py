@@ -3,6 +3,14 @@ import pandas as pd
 def read_csv(folder:str, name:str)->pd.DataFrame:
     return pd.read_csv(f"../{folder}/{name}.csv")
 
+def read_products(folder:str)-pd.DataFrame:
+	txt = pd.read_csv(f"../{folder}/{name}.txt", sep=" ")
+	num_products, num_clients, neg_pts = list(txt.columns)[:3]
+	products = txt[list(txt.columns)[0]]
+	rewards = txt[list(txt.columns)[1]]
+
+	return pd.DataFrame(data={"products":products, "rewards":rewards})
+
 def get_client(clients:pd.DataFrame, account_number:int)->pd.DataFrame:
     """
     return row containing client with account number
