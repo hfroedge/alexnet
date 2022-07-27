@@ -1,10 +1,10 @@
 import pandas as pd
 
-def read_csv(folder:str, name:str)->pd.DataFrame:
-    return pd.read_csv(f"../{folder}/{name}.csv")
+def read_csv(folder:str="B", name:str="trx")->pd.DataFrame:
+    return pd.read_csv(f"../uploads_{folder}/{name}.csv")
 
-def read_products(folder:str)->pd.DataFrame:
-	txt = pd.read_csv(f"../{folder}/products.txt", sep=" ")
+def read_products(folder:str="B")->pd.DataFrame:
+	txt = pd.read_csv(f"../uploads_{folder}/products.txt", sep=" ")
 	num_products, num_clients, neg_pts = list(txt.columns)[:3]
 	products = txt[list(txt.columns)[0]]
 	rewards = txt[list(txt.columns)[1]]
@@ -33,5 +33,18 @@ def get_net_incomes(trx:pd.DataFrame)->pd.Series:
 		nets.append(net_income)
 
 	net_incomes = pd.Series(data=nets, index=index)
-	
+
 	return net_incomes
+
+def write_solution(clients:pd.DataFrame, name:str="tests")->None:
+    
+    save_path = "../solution_{}.txt".format(name)
+    
+    with open(save_path,"w") as f:
+        f.write(str(clients.shape[0]))
+        f.write("\n")
+        for acct in clients["account_number"]:
+            f.write(str(acct))
+            f.write(" ")
+            f.write("get_investments")
+            f.write("\n")
