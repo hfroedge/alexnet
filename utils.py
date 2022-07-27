@@ -36,6 +36,22 @@ def get_net_incomes(trx:pd.DataFrame)->pd.Series:
 
 	return net_incomes
 
+def __get_recommendation(client:pd.DataFrame, client_data=None)->str:
+    """
+    Given client row, gives recommendation 
+    
+    :param client: row from clients csv
+    :param client_data: consolidated data for account number from trx csv
+    
+    :return recommendation
+    """
+    if client["has_mortgage"].values[0] == 1:
+        recommendation =  "refinance_mortgage"
+    else:
+        recommendation = "get_investments"
+        
+    return recommendation
+
 def write_solution(clients:pd.DataFrame, name:str="tests")->None:
     
     save_path = "../solution_{}.txt".format(name)
@@ -46,5 +62,6 @@ def write_solution(clients:pd.DataFrame, name:str="tests")->None:
         for acct in clients["account_number"]:
             f.write(str(acct))
             f.write(" ")
-            f.write("get_investments")
+            recommendation = __get_recommendation(clients.loc[clients["account_number"]==acct])
+            f.write(recommendation)
             f.write("\n")
